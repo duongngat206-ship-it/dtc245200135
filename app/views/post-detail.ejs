@@ -1,0 +1,61 @@
+<%- include('partials/header') %>
+
+<main class="container">
+  <article>
+    <!-- Header -->
+    <header class="article-header">
+      <% if (post.category_name) { %>
+        <a href="/?category=<%= post.category_slug %>" class="badge" style="background-color: <%= post.color_badge || '#2563eb' %>; color: #fff;">
+          <%= post.category_name %>
+        </a>
+      <% } %>
+      <h1 class="article-title"><%= post.title %></h1>
+      <p class="article-lead"><%= post.summary %></p>
+
+      <div class="author-meta" style="justify-content: center; margin-top: 1.5rem;">
+        <img src="<%= post.author_avatar %>" alt="<%= post.author_name %>" class="author-avatar" style="width: 44px; height: 44px;">
+        <div style="text-align: left;">
+          <div class="author-name" style="font-size: 0.9375rem;"><%= post.author_name %></div>
+          <div class="post-date">
+            Xuất bản: <%= new Date(post.created_at).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' }) %> • 👁️ <%= post.views %> lượt xem
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Cover Image -->
+    <% if (post.cover_image) { %>
+      <img src="<%= post.cover_image %>" alt="<%= post.title %>" class="article-cover">
+    <% } %>
+
+    <!-- Content -->
+    <div class="article-content">
+      <%- post.content.replace(/\n\n/g, '<br><br>').replace(/## (.*?)\n/g, '<h2>$1</h2>').replace(/### (.*?)\n/g, '<h3>$1</h3>') %>
+    </div>
+  </article>
+
+  <!-- Related Posts -->
+  <% if (relatedPosts && relatedPosts.length > 0) { %>
+    <section style="border-top: 1px solid var(--border-subtle); padding: 3rem 0; margin-top: 2rem;">
+      <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem;">Bài viết liên quan trong danh mục</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+        <% relatedPosts.forEach(rel => { %>
+          <div style="background-color: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); overflow: hidden; padding: 1rem;">
+            <h4 style="font-size: 0.9375rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.4;">
+              <a href="/posts/<%= rel.slug %>"><%= rel.title %></a>
+            </h4>
+            <span style="font-size: 0.75rem; color: var(--text-subtle);">
+              <%= new Date(rel.created_at).toLocaleDateString('vi-VN') %>
+            </span>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+  <% } %>
+
+  <div style="margin: 2rem 0 4rem; text-align: center;">
+    <a href="/" class="btn btn-secondary">← Quay về Trang chủ</a>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

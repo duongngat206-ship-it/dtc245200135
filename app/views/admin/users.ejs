@@ -1,0 +1,148 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div>
+      <div style="padding: 0.5rem 1rem 1.5rem; font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-subtle);">
+        Bảng điều khiển
+      </div>
+      <ul class="admin-menu">
+        <li><a href="/admin" class="admin-menu-link"><span>📊</span> <span>Tổng quan</span></a></li>
+        <li><a href="/admin/posts" class="admin-menu-link"><span>📝</span> <span>Quản lý Bài viết</span></a></li>
+        <li><a href="/admin/categories" class="admin-menu-link"><span>🏷️</span> <span>Quản lý Danh mục</span></a></li>
+        <li><a href="/admin/users" class="admin-menu-link active"><span>👥</span> <span>Người dùng</span></a></li>
+        <li style="margin-top: 1rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+          <a href="/phpmyadmin/" target="_blank" class="admin-menu-link" style="color: #93c5fd;"><span>🗄️</span> <span>phpMyAdmin ↗</span></a>
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <div style="margin-bottom: 2rem;">
+      <h1 style="font-size: 1.75rem; font-weight: 800;">Quản lý Người dùng</h1>
+      <p style="color: var(--text-muted); font-size: 0.875rem;">
+        Danh sách tài khoản và tạo tác giả mới
+      </p>
+    </div>
+
+    <% if (createdUser) { %>
+      <div class="password-box">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+          <strong style="color: var(--accent-emerald); font-size: 1rem;">
+            Tài khoản mới đã được tạo thành công
+          </strong>
+          <span class="badge" style="background-color: var(--accent-emerald); color: #fff;">Mới tạo</span>
+        </div>
+        <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+          Mật khẩu được hệ thống tự động sinh ngẫu nhiên (10 ký tự):
+        </p>
+        <div style="display: flex; gap: 1rem; align-items: center; background: rgba(0,0,0,0.3); padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid rgba(16, 185, 129, 0.3);">
+          <div>Username: <strong style="color: #fff"><%= createdUser.username %></strong></div>
+          <div>Mật khẩu: <span class="demo-code" id="new-generated-password" style="color: #6ee7b7; font-size: 1rem;"><%= createdUser.generatedPassword %></span></div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="copyPassword()" style="margin-left: auto;">
+            📋 Sao chép
+          </button>
+        </div>
+      </div>
+    <% } %>
+
+    <% if (error) { %>
+      <div style="background-color: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.3); color: var(--accent-rose); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.875rem; margin-bottom: 1.5rem;">
+        ⚠️ <%= error %>
+      </div>
+    <% } %>
+
+    <div style="display: grid; grid-template-columns: 1fr 1.6fr; gap: 2rem;">
+      <!-- Form create user -->
+      <div class="form-card" style="padding: 1.5rem;">
+        <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 1rem;">Tạo Người dùng Mới</h2>
+        <p style="font-size: 0.8125rem; color: var(--text-subtle); margin-bottom: 1.5rem;">
+          Mật khẩu ngẫu nhiên sẽ được tự động tạo.
+        </p>
+
+        <form action="/admin/users" method="POST">
+          <div class="form-group">
+            <label class="form-label" for="username">Username *</label>
+            <input type="text" name="username" id="username" class="form-control" placeholder="vd: author_hoang" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="full_name">Họ và tên *</label>
+            <input type="text" name="full_name" id="full_name" class="form-control" placeholder="vd: Hoàng Văn Minh" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">Địa chỉ Email *</label>
+            <input type="email" name="email" id="email" class="form-control" placeholder="hoang@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="role">Vai trò</label>
+            <select name="role" id="role" class="form-control">
+              <option value="author">Tác giả (Author)</option>
+              <option value="admin">Quản trị viên (Admin)</option>
+              <option value="reader">Độc giả (Reader)</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%;">
+            Tạo tài khoản
+          </button>
+        </form>
+      </div>
+
+      <!-- User table -->
+      <div class="table-card">
+        <div class="table-header">
+          <h2 style="font-size: 1.125rem; font-weight: 700;">Danh sách Tài khoản</h2>
+          <span style="font-size: 0.8125rem; color: var(--text-subtle);"><%= users.length %> người dùng</span>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Họ tên & Email</th>
+              <th>Vai trò</th>
+              <th>Ngày tạo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% users.forEach(u => { %>
+              <tr>
+                <td style="font-family: var(--font-mono); color: var(--text-subtle);">#<%= u.id %></td>
+                <td>
+                  <strong style="color: #fff"><%= u.username %></strong>
+                </td>
+                <td>
+                  <div><%= u.full_name %></div>
+                  <div style="font-size: 0.75rem; color: var(--text-subtle);"><%= u.email %></div>
+                </td>
+                <td>
+                  <span class="badge" style="background-color: <%= u.role === 'admin' ? 'var(--primary)' : 'var(--bg-surface-elevated)' %>; color: #fff;">
+                    <%= u.role %>
+                  </span>
+                </td>
+                <td style="font-size: 0.75rem;"><%= new Date(u.created_at).toLocaleDateString('vi-VN') %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  function copyPassword() {
+    const pass = document.getElementById('new-generated-password').innerText.trim();
+    navigator.clipboard.writeText(pass).then(() => {
+      alert('Đã sao chép mật khẩu: ' + pass);
+    });
+  }
+</script>
+
+<%- include('../partials/footer') %>

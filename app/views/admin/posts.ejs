@@ -1,0 +1,114 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div>
+      <div style="padding: 0.5rem 1rem 1.5rem; font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-subtle);">
+        Bảng điều khiển
+      </div>
+      <ul class="admin-menu">
+        <li>
+          <a href="/admin" class="admin-menu-link <%= activeMenu === 'dashboard' ? 'active' : '' %>">
+            <span>📊</span> <span>Tổng quan</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/posts" class="admin-menu-link <%= activeMenu === 'posts' ? 'active' : '' %>">
+            <span>📝</span> <span>Quản lý Bài viết</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/categories" class="admin-menu-link <%= activeMenu === 'categories' ? 'active' : '' %>">
+            <span>🏷️</span> <span>Quản lý Danh mục</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/users" class="admin-menu-link <%= activeMenu === 'users' ? 'active' : '' %>">
+            <span>👥</span> <span>Người dùng & Mật khẩu</span>
+          </a>
+        </li>
+        <li style="margin-top: 1rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+          <a href="/phpmyadmin/" target="_blank" class="admin-menu-link" style="color: #93c5fd;">
+            <span>🗄️</span> <span>phpMyAdmin (Port 8080) ↗</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div style="padding: 1rem; border-top: 1px solid var(--border-subtle); font-size: 0.8125rem; color: var(--text-subtle);">
+      Đăng nhập: <strong style="color: #fff"><%= currentUser.username %></strong>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <div>
+        <h1 style="font-size: 1.75rem; font-weight: 800;">Quản lý Bài viết (CRUD)</h1>
+        <p style="color: var(--text-muted); font-size: 0.875rem;">Danh sách toàn bộ bài viết trong cơ sở dữ liệu MySQL</p>
+      </div>
+      <a href="/admin/posts/new" class="btn btn-primary" id="btn-add-new-post">✍️ Thêm bài viết mới</a>
+    </div>
+
+    <div class="table-card">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="width: 70px;">Ảnh</th>
+            <th>Tiêu đề bài viết</th>
+            <th>Danh mục</th>
+            <th>Tác giả</th>
+            <th>Lượt xem</th>
+            <th>Trạng thái</th>
+            <th style="text-align: right;">Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (posts.length === 0) { %>
+            <tr>
+              <td colspan="7" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                Chưa có bài viết nào trong hệ thống.
+              </td>
+            </tr>
+          <% } else { %>
+            <% posts.forEach(post => { %>
+              <tr>
+                <td>
+                  <img src="<%= post.cover_image %>" alt="" style="width: 50px; height: 35px; object-fit: cover; border-radius: 4px;">
+                </td>
+                <td>
+                  <a href="/posts/<%= post.slug %>" target="_blank" style="font-weight: 700; color: #fff;">
+                    <%= post.title %> ↗
+                  </a>
+                </td>
+                <td>
+                  <span class="badge" style="background-color: var(--bg-surface-elevated); border: 1px solid var(--border-light); color: var(--text-muted)">
+                    <%= post.category_name || 'Mặc định' %>
+                  </span>
+                </td>
+                <td><%= post.author_name %></td>
+                <td><%= post.views %></td>
+                <td>
+                  <span class="badge" style="background-color: <%= post.status === 'published' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)' %>; color: <%= post.status === 'published' ? '#10b981' : '#f59e0b' %>;">
+                    <%= post.status === 'published' ? 'Published' : 'Draft' %>
+                  </span>
+                </td>
+                <td style="text-align: right;">
+                  <div style="display: inline-flex; gap: 0.5rem;">
+                    <a href="/admin/posts/<%= post.id %>/edit" class="btn btn-secondary btn-sm">Sửa</a>
+                    <form action="/admin/posts/<%= post.id %>/delete" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bài viết này không?');" style="display: inline;">
+                      <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>

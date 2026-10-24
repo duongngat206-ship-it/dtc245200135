@@ -1,0 +1,117 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div>
+      <div style="padding: 0.5rem 1rem 1.5rem; font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-subtle);">
+        Bảng điều khiển
+      </div>
+      <ul class="admin-menu">
+        <li><a href="/admin" class="admin-menu-link"><span>📊</span> <span>Tổng quan</span></a></li>
+        <li><a href="/admin/posts" class="admin-menu-link active"><span>📝</span> <span>Quản lý Bài viết</span></a></li>
+        <li><a href="/admin/categories" class="admin-menu-link"><span>🏷️</span> <span>Quản lý Danh mục</span></a></li>
+        <li><a href="/admin/users" class="admin-menu-link"><span>👥</span> <span>Người dùng & Mật khẩu</span></a></li>
+        <li style="margin-top: 1rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+          <a href="/phpmyadmin/" target="_blank" class="admin-menu-link" style="color: #93c5fd;"><span>🗄️</span> <span>phpMyAdmin ↗</span></a>
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <div style="margin-bottom: 2rem;">
+      <a href="/admin/posts" style="color: var(--text-muted); font-size: 0.875rem;">← Quay lại danh sách bài viết</a>
+      <h1 style="font-size: 1.75rem; font-weight: 800; margin-top: 0.5rem;">
+        <%= post ? 'Chỉnh sửa Bài viết #' + post.id : 'Soạn thảo Bài viết Mới' %>
+      </h1>
+    </div>
+
+    <div class="form-card">
+      <form action="<%= post ? '/admin/posts/' + post.id + '/edit' : '/admin/posts' %>" method="POST">
+        
+        <div class="form-group">
+          <label class="form-label" for="title">Tiêu đề bài viết *</label>
+          <input 
+            type="text" 
+            name="title" 
+            id="title" 
+            class="form-control" 
+            value="<%= post ? post.title : '' %>" 
+            placeholder="Nhập tiêu đề hấp dẫn..." 
+            required
+          >
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+          <div class="form-group">
+            <label class="form-label" for="category_id">Danh mục chuyên ngành *</label>
+            <select name="category_id" id="category_id" class="form-control" required>
+              <option value="">-- Chọn danh mục --</option>
+              <% categories.forEach(cat => { %>
+                <option value="<%= cat.id %>" <%= post && post.category_id === cat.id ? 'selected' : '' %>>
+                  <%= cat.name %>
+                </option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="status">Trạng thái xuất bản</label>
+            <select name="status" id="status" class="form-control">
+              <option value="published" <%= post && post.status === 'published' ? 'selected' : '' %>>Đã xuất bản (Published)</option>
+              <option value="draft" <%= post && post.status === 'draft' ? 'selected' : '' %>>Bản nháp (Draft)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="cover_image">URL Ảnh bìa (Cover Image)</label>
+          <input 
+            type="url" 
+            name="cover_image" 
+            id="cover_image" 
+            class="form-control" 
+            value="<%= post ? post.cover_image : 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80' %>" 
+            placeholder="https://images.unsplash.com/..."
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="summary">Đoạn tóm tắt ngắn (Summary) *</label>
+          <textarea 
+            name="summary" 
+            id="summary" 
+            class="form-control" 
+            style="min-height: 80px;" 
+            placeholder="Mô tả ngắn gọn nội dung bài viết..." 
+            required
+          ><%= post ? post.summary : '' %></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="content">Nội dung chi tiết bài viết (Hỗ trợ Markdown & HTML) *</label>
+          <textarea 
+            name="content" 
+            id="content" 
+            class="form-control" 
+            style="min-height: 250px; font-family: var(--font-mono); font-size: 0.875rem;" 
+            placeholder="Viết nội dung bài viết tại đây..." 
+            required
+          ><%= post ? post.content : '' %></textarea>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+          <button type="submit" class="btn btn-primary" id="btn-save-post">
+            💾 <%= post ? 'Lưu thay đổi' : 'Đăng bài viết ngay' %>
+          </button>
+          <a href="/admin/posts" class="btn btn-secondary">Hủy bỏ</a>
+        </div>
+
+      </form>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>

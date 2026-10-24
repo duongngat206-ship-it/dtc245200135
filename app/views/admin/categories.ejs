@@ -1,0 +1,111 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div>
+      <div style="padding: 0.5rem 1rem 1.5rem; font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-subtle);">
+        Bảng điều khiển
+      </div>
+      <ul class="admin-menu">
+        <li><a href="/admin" class="admin-menu-link"><span>📊</span> <span>Tổng quan</span></a></li>
+        <li><a href="/admin/posts" class="admin-menu-link"><span>📝</span> <span>Quản lý Bài viết</span></a></li>
+        <li><a href="/admin/categories" class="admin-menu-link active"><span>🏷️</span> <span>Quản lý Danh mục</span></a></li>
+        <li><a href="/admin/users" class="admin-menu-link"><span>👥</span> <span>Người dùng & Mật khẩu</span></a></li>
+        <li style="margin-top: 1rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+          <a href="/phpmyadmin/" target="_blank" class="admin-menu-link" style="color: #93c5fd;"><span>🗄️</span> <span>phpMyAdmin ↗</span></a>
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <div style="margin-bottom: 2rem;">
+      <h1 style="font-size: 1.75rem; font-weight: 800;">Quản lý Danh mục Bài viết</h1>
+      <p style="color: var(--text-muted); font-size: 0.875rem;">Phân loại chủ đề cho hệ thống Blog & CMS</p>
+    </div>
+
+    <% if (message) { %>
+      <div style="background-color: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--accent-emerald); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.875rem; margin-bottom: 1.5rem;">
+        ✅ <%= message %>
+      </div>
+    <% } %>
+
+    <% if (error) { %>
+      <div style="background-color: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.3); color: var(--accent-rose); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.875rem; margin-bottom: 1.5rem;">
+        ⚠️ <%= error %>
+      </div>
+    <% } %>
+
+    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem;">
+      <!-- Form Thêm Danh mục Mới -->
+      <div class="form-card" style="padding: 1.5rem;">
+        <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 1.25rem;">Thêm Danh mục Mới</h2>
+        <form action="/admin/categories" method="POST">
+          <div class="form-group">
+            <label class="form-label" for="name">Tên danh mục *</label>
+            <input type="text" name="name" id="name" class="form-control" placeholder="Ví dụ: AI & Machine Learning" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="color_badge">Màu nhãn (Badge Color)</label>
+            <input type="color" name="color_badge" id="color_badge" class="form-control" value="#2563eb" style="height: 42px; padding: 0.25rem;">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="description">Mô tả ngắn</label>
+            <textarea name="description" id="description" class="form-control" style="min-height: 80px;" placeholder="Giới thiệu về chủ đề này..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%;">
+            ➕ Tạo danh mục
+          </button>
+        </form>
+      </div>
+
+      <!-- Danh sách Danh mục hiện có -->
+      <div class="table-card">
+        <div class="table-header">
+          <h2 style="font-size: 1.125rem; font-weight: 700;">Danh sách Hiện có</h2>
+          <span style="font-size: 0.8125rem; color: var(--text-subtle);"><%= categories.length %> danh mục</span>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Màu</th>
+              <th>Tên Danh mục</th>
+              <th>Slug URL</th>
+              <th>Số bài</th>
+              <th style="text-align: right;">Xóa</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% categories.forEach(cat => { %>
+              <tr>
+                <td>
+                  <span style="display: inline-block; width: 14px; height: 14px; border-radius: 50%; background-color: <%= cat.color_badge %>;"></span>
+                </td>
+                <td>
+                  <strong style="color: #fff"><%= cat.name %></strong>
+                  <% if (cat.description) { %>
+                    <p style="font-size: 0.75rem; color: var(--text-subtle); margin-top: 2px;"><%= cat.description %></p>
+                  <% } %>
+                </td>
+                <td style="font-family: var(--font-mono); font-size: 0.75rem;"><%= cat.slug %></td>
+                <td><%= cat.post_count %> bài</td>
+                <td style="text-align: right;">
+                  <form action="/admin/categories/<%= cat.id %>/delete" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này?');" style="display: inline;">
+                    <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'Enterprise Blog & CMS' %></title>
+  <meta name="description" content="Nền tảng Quản trị Nội dung và Chia sẻ Kiến thức Hệ thống chuẩn Doanh nghiệp">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="/" class="brand-logo" id="brand-home-link">
+        <div class="brand-icon">⚡</div>
+        <span>InsightHub<span style="color: var(--primary)">.io</span></span>
+      </a>
+
+      <!-- Search Form -->
+      <form action="/" method="GET" class="search-form" id="global-search-form">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="text" 
+          name="q" 
+          class="search-input" 
+          placeholder="Tìm kiếm bài viết..." 
+          value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+          id="search-input"
+        >
+      </form>
+
+      <!-- Nav Links -->
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link">Trang chủ</a></li>
+          <li><a href="/#articles-section" class="nav-link">Bài viết</a></li>
+          <% if (typeof currentUser !== 'undefined' && currentUser) { %>
+            <li><a href="/admin" class="btn btn-primary btn-sm" id="btn-admin-panel">⚙️ Quản trị (<%= currentUser.username %>)</a></li>
+            <li><a href="/logout" class="btn btn-secondary btn-sm" id="btn-logout">Đăng xuất</a></li>
+          <% } else { %>
+            <li><a href="/login" class="btn btn-primary btn-sm" id="btn-login-header">🔐 Đăng nhập Admin</a></li>
+          <% } %>
+        </ul>
+      </nav>
+    </div>
+  </header>

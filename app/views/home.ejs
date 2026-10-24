@@ -1,0 +1,112 @@
+<%- include('partials/header') %>
+
+<main class="container">
+  <!-- Hero Section -->
+  <section class="hero-banner">
+    <div style="max-width: 800px;">
+      <h1 class="hero-headline">
+        Khám phá Tri thức <span>Quản trị Hệ thống & Công nghệ</span> Hiện đại
+      </h1>
+      <p class="hero-description">
+        Nền tảng chia sẻ thực tiễn về kiến trúc hạ tầng Cloud Native, Dockerization, quan sát hệ thống (Observability), bảo mật Hardening và phát triển ứng dụng phân tán.
+      </p>
+
+      <!-- Category Filter Pills -->
+      <div class="category-pills">
+        <a href="/" class="category-pill <%= !selectedCategory ? 'active' : '' %>">Tất cả bài viết</a>
+        <% categories.forEach(cat => { %>
+          <a href="/?category=<%= cat.slug %>" class="category-pill <%= selectedCategory === cat.slug ? 'active' : '' %>">
+            <%= cat.name %>
+          </a>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search Notification if any -->
+  <% if (searchQuery) { %>
+    <div style="margin: 1.5rem 0; padding: 1rem 1.25rem; background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+      <span>Kết quả tìm kiếm cho từ khóa: <strong style="color: var(--primary)"><%= searchQuery %></strong> (<%= posts.length %> bài viết)</span>
+      <a href="/" style="font-size: 0.8125rem; color: var(--text-muted); text-decoration: underline;">Xóa bộ lọc</a>
+    </div>
+  <% } %>
+
+  <!-- Featured Article (if not searching and no filter) -->
+  <% if (!selectedCategory && !searchQuery && featuredPost) { %>
+    <div class="section-title">
+      <span>Bài viết Tiêu biểu</span>
+    </div>
+    <article class="featured-card">
+      <div class="featured-img-wrap">
+        <img src="<%= featuredPost.cover_image %>" alt="<%= featuredPost.title %>">
+      </div>
+      <div class="featured-content">
+        <% if (featuredPost.category_name) { %>
+          <span class="badge" style="background-color: <%= featuredPost.color_badge || '#2563eb' %>; color: #fff;">
+            <%= featuredPost.category_name %>
+          </span>
+        <% } %>
+        <h2 class="post-title">
+          <a href="/posts/<%= featuredPost.slug %>"><%= featuredPost.title %></a>
+        </h2>
+        <p class="post-summary"><%= featuredPost.summary %></p>
+        <div class="author-meta">
+          <img src="<%= featuredPost.author_avatar %>" alt="<%= featuredPost.author_name %>" class="author-avatar">
+          <div>
+            <div class="author-name"><%= featuredPost.author_name %></div>
+            <div class="post-date">
+              <%= new Date(featuredPost.created_at).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' }) %> • 👁️ <%= featuredPost.views %> lượt xem
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  <% } %>
+
+  <!-- Post Grid -->
+  <div class="section-title" id="articles-section">
+    <span>
+      <%= selectedCategory ? 'Danh mục: ' + (categories.find(c => c.slug === selectedCategory)?.name || selectedCategory) : 'Tất cả bài viết' %>
+    </span>
+    <span style="font-size: 0.875rem; color: var(--text-subtle);"><%= posts.length %> bài viết</span>
+  </div>
+
+  <% if (posts.length === 0) { %>
+    <div style="text-align: center; padding: 4rem 1rem; background-color: var(--bg-surface); border-radius: var(--radius-md); border: 1px dashed var(--border-light); margin-bottom: 3rem;">
+      <p style="font-size: 1.125rem; color: var(--text-muted); margin-bottom: 1rem;">Không tìm thấy bài viết nào phù hợp.</p>
+      <a href="/" class="btn btn-primary btn-sm">Quay về trang chủ</a>
+    </div>
+  <% } else { %>
+    <div class="posts-grid">
+      <% posts.forEach(post => { %>
+        <article class="post-card">
+          <a href="/posts/<%= post.slug %>" class="post-card-img-wrap">
+            <img src="<%= post.cover_image %>" alt="<%= post.title %>" loading="lazy">
+          </a>
+          <div class="post-card-body">
+            <% if (post.category_name) { %>
+              <span class="badge" style="background-color: <%= post.color_badge || '#2563eb' %>; color: #fff;">
+                <%= post.category_name %>
+              </span>
+            <% } %>
+            <h3 class="post-card-title">
+              <a href="/posts/<%= post.slug %>"><%= post.title %></a>
+            </h3>
+            <p class="post-card-summary"><%= post.summary %></p>
+            <div class="author-meta" style="margin-top: auto;">
+              <img src="<%= post.author_avatar %>" alt="<%= post.author_name %>" class="author-avatar" style="width: 28px; height: 28px;">
+              <div>
+                <div class="author-name" style="font-size: 0.8125rem;"><%= post.author_name %></div>
+                <div class="post-date" style="font-size: 0.6875rem;">
+                  <%= new Date(post.created_at).toLocaleDateString('vi-VN') %> • 👁️ <%= post.views %> views
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  <% } %>
+</main>
+
+<%- include('partials/footer') %>

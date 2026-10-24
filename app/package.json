@@ -1,0 +1,20 @@
+{
+  "name": "enterprise-blog-cms",
+  "version": "1.0.0",
+  "description": "Enterprise Blog & CMS Web Application with Prometheus Metrics, JWT Auth, and MySQL",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.9",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.9.7",
+    "prom-client": "^15.1.2"
+  }
+}

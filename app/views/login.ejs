@@ -1,0 +1,86 @@
+<%- include('partials/header') %>
+
+<main class="container" style="display: flex; align-items: center; justify-content: center; min-height: 75vh; padding: 2rem 1rem;">
+  <div style="width: 100%; max-width: 440px;">
+
+    <!-- Demo credentials banner -->
+    <div class="demo-banner">
+      <div class="demo-banner-title">
+        <span>🔑</span>
+        <span>Tài khoản Quản trị Mặc định</span>
+      </div>
+      <p style="font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+        Hệ thống được khởi tạo sẵn tài khoản quản trị:
+      </p>
+      <div class="demo-banner-body">
+        <div>Username: <span class="demo-code" id="demo-user"><%= demoCredentials.username %></span></div>
+        <div>Mật khẩu: <span class="demo-code" id="demo-pass"><%= demoCredentials.password %></span></div>
+      </div>
+      <button 
+        type="button" 
+        class="btn btn-secondary btn-sm" 
+        style="margin-top: 0.75rem; width: 100%; font-size: 0.75rem;" 
+        onclick="fillDemoAccount()"
+      >
+        ⚡ Tự động điền tài khoản mẫu
+      </button>
+    </div>
+
+    <!-- Login form -->
+    <div class="form-card" style="max-width: 100%;">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h2 style="font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em;">Đăng nhập Hệ thống</h2>
+        <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+          Quản trị Blog & CMS
+        </p>
+      </div>
+
+      <% if (error) { %>
+        <div style="background-color: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.3); color: var(--accent-rose); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.875rem; margin-bottom: 1.5rem;">
+          ⚠️ <%= error %>
+        </div>
+      <% } %>
+
+      <form action="/login" method="POST" id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="username">Tên đăng nhập hoặc Email</label>
+          <input 
+            type="text" 
+            name="username" 
+            id="username" 
+            class="form-control" 
+            placeholder="admin" 
+            required 
+            autofocus
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Mật khẩu</label>
+          <input 
+            type="password" 
+            name="password" 
+            id="password" 
+            class="form-control" 
+            placeholder="••••••••••" 
+            required
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;" id="btn-submit-login">
+          Đăng nhập vào Dashboard
+        </button>
+      </form>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  function fillDemoAccount() {
+    document.getElementById('username').value = document.getElementById('demo-user').innerText.trim();
+    document.getElementById('password').value = document.getElementById('demo-pass').innerText.trim();
+  }
+</script>
+
+<%- include('partials/footer') %>

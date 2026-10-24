@@ -1,0 +1,56 @@
+# ==========================================
+# GITIGNORE - ĐỒ ÁN TRIỂN KHAI & QUẢN TRỊ HỆ THỐNG
+# Hệ thống Blog / CMS (Đề 7)
+# ==========================================
+
+# 1. Environment & Secrets (TUYỆT ĐỐI KHÔNG PUSH LÊN GITHUB)
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+*.crt
+!nginx/ssl/nginx-selfsigned.crt.example
+
+# 2. File cho AI Agent & Tệp tạm thời
+.gemini/
+.agents/
+.system_generated/
+skills.zip
+rule.md
+context.md
+topic.md
+require.md
+*.brain
+*.scratch
+
+# 3. Dependencies & Build Artifacts
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+.cache/
+
+# 4. Logs & Database files
+*.log
+logs/
+mysql_data/
+grafana_data/
+prometheus_data/
+loki_data/
+
+# 5. OS & IDE artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 6. Temp and swap
+tmp/
+temp/
