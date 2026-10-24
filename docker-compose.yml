@@ -82,6 +82,8 @@ services:
     ports:
       - "${HTTP_PORT}:80"
       - "${HTTPS_PORT}:443"
+    volumes:
+      - nginx_logs:/var/log/nginx
     depends_on:
       - blog_app
       - phpmyadmin
@@ -124,7 +126,7 @@ services:
       - monitoring_net
 
   mysql_exporter:
-    image: prom/mysqld-exporter:v0.15.1
+    image: prom/mysqld-exporter:v0.14.0
     container_name: blog_mysql_exporter
     restart: unless-stopped
     environment:
@@ -154,6 +156,35 @@ services:
     networks:
       - monitoring_net
 
+  # Logging
+  loki:
+    image: grafana/loki:2.9.6
+    container_name: blog_loki
+    restart: unless-stopped
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./monitoring/loki/loki-config.yml:/etc/loki/local-config.yaml:ro
+      - loki_data:/loki
+    ports:
+      - "${LOKI_PORT}:3100"
+    networks:
+      - monitoring_net
+
+  promtail:
+    image: grafana/promtail:2.9.6
+    container_name: blog_promtail
+    restart: unless-stopped
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - ./monitoring/promtail/promtail-config.yml:/etc/promtail/config.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - nginx_logs:/var/log/nginx:ro
+    depends_on:
+      - loki
+    networks:
+      - monitoring_net
+
 networks:
   frontend_net:
     driver: bridge
@@ -166,3 +197,5 @@ volumes:
   mysql_data:
   prometheus_data:
   grafana_data:
+  loki_data:
+  nginx_logs:

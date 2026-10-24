@@ -8,6 +8,7 @@ const dbConfig = {
   user: process.env.MYSQL_USER || 'blog_user',
   password: process.env.MYSQL_PASSWORD || 'OyzIVfYrlI',
   database: process.env.MYSQL_DATABASE || 'blog_cms_db',
+  charset: 'utf8mb4',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,

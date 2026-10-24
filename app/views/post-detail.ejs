@@ -29,8 +29,24 @@
     <% } %>
 
     <!-- Content -->
+    <%
+      const escapeHtml = (str) => {
+        return (str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      };
+      const safeContent = escapeHtml(post.content)
+        .replace(/\n\n/g, '<br><br>')
+        .replace(/## (.*?)\n/g, '<h2>$1</h2>')
+        .replace(/### (.*?)\n/g, '<h3>$1</h3>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>');
+    %>
     <div class="article-content">
-      <%- post.content.replace(/\n\n/g, '<br><br>').replace(/## (.*?)\n/g, '<h2>$1</h2>').replace(/### (.*?)\n/g, '<h3>$1</h3>') %>
+      <%- safeContent %>
     </div>
   </article>
 

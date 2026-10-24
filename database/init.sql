@@ -1,3 +1,6 @@
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+
 CREATE DATABASE IF NOT EXISTS `blog_cms_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `blog_cms_db`;
 
@@ -48,9 +51,22 @@ INSERT INTO `categories` (`id`, `name`, `slug`, `description`, `color_badge`) VA
 (2, 'Kiến trúc Phần mềm', 'kien-truc-phan-mem', 'Thiết kế hệ thống phân tán, Microservices, Clean Architecture và Design Patterns', '#8b5cf6'),
 (3, 'Bảo mật & Giám sát', 'bao-mat-giam-sat', 'Thực hành Hardening hệ thống, Prometheus, Grafana và phân tích log tập trung Loki', '#ef4444'),
 (4, 'Phát triển Backend', 'phat-trien-backend', 'Công nghệ Node.js, REST API, Database indexing và tối ưu hóa truy vấn', '#10b981')
-ON DUPLICATE KEY UPDATE `name`=VALUES(`name`);
+ON DUPLICATE KEY UPDATE 
+  `name`=VALUES(`name`),
+  `slug`=VALUES(`slug`),
+  `description`=VALUES(`description`),
+  `color_badge`=VALUES(`color_badge`);
 
--- Thêm Bài viết mẫu chất lượng cao
+-- Seed initial author user
+INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `full_name`, `role`) VALUES
+(1, 'admin', 'admin@enterprise-blog.local', '$2a$10$7Q9b2B/0Rsm1Z0V1k9Q0Iu0Rsm1Z0V1k9Q0Iu0Rsm1Z0V1k9Q0Iu.', 'System Administrator', 'admin')
+ON DUPLICATE KEY UPDATE 
+  `username`=VALUES(`username`),
+  `email`=VALUES(`email`),
+  `full_name`=VALUES(`full_name`),
+  `role`=VALUES(`role`);
+
+-- Seed posts
 INSERT INTO `posts` (`id`, `title`, `slug`, `summary`, `content`, `cover_image`, `category_id`, `author_id`, `status`, `views`, `created_at`) VALUES
 (1, 
  'Tối ưu hóa Docker Container và Triển khai Đa tầng với Nginx Reverse Proxy', 
@@ -91,4 +107,11 @@ INSERT INTO `posts` (`id`, `title`, `slug`, `summary`, `content`, `cover_image`,
  '## 1. Cơ chế hoạt động của JWT (JSON Web Token)\n\nJWT cho phép xác thực phi trạng thái (stateless), chia sẻ danh tính an toàn giữa client và server thông qua chuỗi mã hóa gồm 3 phần: Header, Payload và Signature.\n\n### Quy trình xác thực an toàn:\n1. Người dùng gửi thông tin đăng nhập (Username / Password).\n2. Server kiểm tra mật khẩu bằng thuật toán băm Bcrypt kèm salt.\n3. Nếu hợp lệ, Server ký tạo JWT với secret key an toàn và gửi về cho Client qua HttpOnly Cookie hoặc Authorization Header.\n4. Mọi request tiếp theo vào Admin Dashboard đều được middleware kiểm tra chữ ký token trước khi cấp quyền truy cập.',
  'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80',
  4, 1, 'published', 215, NOW())
-ON DUPLICATE KEY UPDATE `title`=VALUES(`title`);
+ON DUPLICATE KEY UPDATE 
+  `title`=VALUES(`title`),
+  `summary`=VALUES(`summary`),
+  `content`=VALUES(`content`),
+  `cover_image`=VALUES(`cover_image`),
+  `category_id`=VALUES(`category_id`),
+  `author_id`=VALUES(`author_id`),
+  `status`=VALUES(`status`);

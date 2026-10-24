@@ -146,11 +146,12 @@ async function createPost(req, res) {
     }
 
     const defaultCover = cover_image || 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80';
+    const catId = category_id && category_id !== '' ? parseInt(category_id, 10) : null;
 
     await pool.query(`
       INSERT INTO posts (title, slug, summary, content, category_id, author_id, cover_image, status)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `, [title, slug, summary, content, category_id || null, req.user.id, defaultCover, status || 'published']);
+    `, [title, slug, summary, content, catId, req.user.id, defaultCover, status || 'published']);
 
     res.redirect('/admin/posts');
   } catch (err) {
@@ -184,12 +185,13 @@ async function updatePost(req, res) {
   try {
     const { id } = req.params;
     const { title, summary, content, category_id, cover_image, status } = req.body;
+    const catId = category_id && category_id !== '' ? parseInt(category_id, 10) : null;
 
     await pool.query(`
       UPDATE posts 
       SET title = ?, summary = ?, content = ?, category_id = ?, cover_image = ?, status = ?
       WHERE id = ?
-    `, [title, summary, content, category_id || null, cover_image, status, id]);
+    `, [title, summary, content, catId, cover_image, status, id]);
 
     res.redirect('/admin/posts');
   } catch (err) {

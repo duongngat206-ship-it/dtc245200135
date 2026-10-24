@@ -54,3 +54,7 @@ desktop.ini
 # 6. Temp and swap
 tmp/
 temp/
+*.txt
+~$*
+scripts/
+docs/
